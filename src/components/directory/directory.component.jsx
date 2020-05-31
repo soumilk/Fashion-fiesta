@@ -2,7 +2,7 @@ import React from 'react';
 import MenuItem from '../menu-item/menu-item.component';
 import './directory.styles.scss';
 import { connect } from 'react-redux';
-import {createStructuresSelector } from 'reselect';
+import {createStructuredSelector } from 'reselect';
 import {selectDirectorySections} from '../../redux/directory/directory.selectors';
 // This is gonna be a class comonent, as we need to access the state of the menu-items
 const Directory= ({sections})=>(
@@ -15,7 +15,7 @@ const Directory= ({sections})=>(
   </div>
 );
 
-const mapStateToProps = createStructuresSelector({
+const mapStateToProps = createStructuredSelector({
   sections: selectDirectorySections
 });
 export default connect(mapStateToProps)(Directory);
