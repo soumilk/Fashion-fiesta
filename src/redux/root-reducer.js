@@ -7,9 +7,20 @@ This root-reduer is gonna be the actual code that combines all of out other stat
 
 import {combineReducers} from 'redux';
 import userReducer from './user/user.reducer';
+import {persistReducer } from 'redux-persist';
+
+// This is to specify the actual storage type (here it is localstorage)
+import storage from 'redux-persist/lib/storage';
 import cartReducer from './cart/cart.reducer';
 
-export  default combineReducers({
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['cart'] // it takes the parameters which we want to store
+}
+
+const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer
 });
+export  default persistReducer(persistConfig, rootReducer);
