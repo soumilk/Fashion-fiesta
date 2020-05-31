@@ -12,6 +12,7 @@ import {persistReducer } from 'redux-persist';
 // This is to specify the actual storage type (here it is localstorage)
 import storage from 'redux-persist/lib/storage';
 import cartReducer from './cart/cart.reducer';
+import directoryReducer from './directory/directory.reducer';
 
 const persistConfig = {
   key: 'root',
@@ -21,6 +22,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  directory: directoryReducer
 });
+
 export  default persistReducer(persistConfig, rootReducer);
