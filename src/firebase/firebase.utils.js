@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-const config={
+const config = {
   apiKey: "AIzaSyA75Q-mTEiTsBfn-jRUeHPH2J2GykgNBcg",
   authDomain: "fashion-db-2b95e.firebaseapp.com",
   databaseURL: "https://fashion-db-2b95e.firebaseio.com",
@@ -12,37 +12,54 @@ const config={
   appId: "1:637896120165:web:d5811dcf634a8c5ee1738c",
   measurementId: "G-JTBP2P73G6"
 };
+firebase.initializeApp(config);
 
-export const createUserProfileDocument = async (userAuth,additionalData)=>{
-  if(!userAuth) return ;
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if (!userAuth) return;
 
   const userRef = firestore.doc(`users/${userAuth.uid}`);
-  const snapShot =await userRef.get();
-
-  if(!snapShot.exists){
-    const{displayName,email}= userAuth;
+  /*const collectionRef = firestore.collection('users');
+*/
+  const snapShot = await userRef.get();
+  /*const collectionSnapshot = await collectionRef.get();
+  console.log({ collection: collectionSnapshot.docs.map(doc => doc.data()) });
+*/
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
     const createdAt = new Date();
-  try{
-    await userRef.set({
-      displayName,
-      email,
-      createdAt,
-      ...additionalData
-    })
-  }catch(error){
-    console.log('error creating user', error.message);
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData
+      })
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
   }
-}
-return userRef;
+  return userRef;
 };
 
-firebase.initializeApp(config);
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  // The batch is used here to make sure that all the data is pushed to the firestore 
+  const batch = firestore.batch();
+  objectsToAdd.forEach(obj => {
+    // We will keep the .doc() empty so as the firebase can set it for us which is unique
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+  return await batch.commit()
+};
+
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({prompt:'select_account'});
-export const signInWithGoogle = ()=> auth.signInWithPopup(provider);
+provider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 export default firebase;
