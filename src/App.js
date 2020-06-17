@@ -9,9 +9,8 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import { createStructuredSelector } from 'reselect';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-sign-up/sign-in-sign-up.component';
-import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { selectCurrentUser } from './redux/user/user.selectors';
-import { selectCollectionsForPreview } from './redux/shop/shop.selector';
 
 class App extends React.Component {
 
@@ -19,7 +18,7 @@ class App extends React.Component {
 
   componentDidMount() {
 
-    const { setCurrentUser, collectionsArray } = this.props;
+    const { setCurrentUser } = this.props;
 
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
@@ -37,10 +36,6 @@ class App extends React.Component {
         });
       }
       setCurrentUser(userAuth);
-      addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
-      /* As we do not want some fields of our data to e stored in the databse, 
-      we are passing a new array with mapped arguments i.e. title and items
-      */
     });
   }
 
@@ -66,8 +61,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-  collectionsArray: selectCollectionsForPreview
+  currentUser: selectCurrentUser
 });
 
 const mapDispatchToProps = dispatch => ({
